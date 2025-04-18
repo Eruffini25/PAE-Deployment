@@ -2,7 +2,7 @@ stages:
   - ansible
 
 ansible-run:
-  stage: deploy
+  stage: ansible
   image: cytopia/ansible:latest
   tags:
     - Debian-runner
