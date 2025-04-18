@@ -1,0 +1,9 @@
+image: cytopia/ansible:latest
+
+stages:
+  - deploy
+
+ansible-playbook-run:
+  stage: deploy
+  script:
+    #- ansible-playbook -i inventories/hosts.ini playbooks/site.yml
