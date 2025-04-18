@@ -1,9 +1,10 @@
-image: cytopia/ansible:latest
-
 stages:
-  - deploy
+  - ansible
 
-ansible-playbook-run:
+ansible-run:
   stage: deploy
+  image: cytopia/ansible:latest
+  tags:
+    - Debian-runner
   script:
-    #- ansible-playbook -i inventories/hosts.ini playbooks/site.yml
+    - ansible --version
