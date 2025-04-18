@@ -5,6 +5,6 @@ ansible-run:
   stage: ansible
   image: cytopia/ansible:latest
   tags:
-    - Debian-runner
+    - Debian-Runner
   script:
     - ansible --version
