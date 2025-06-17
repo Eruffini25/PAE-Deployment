@@ -1,0 +1,13 @@
+stages:
+  - ansible
+
+ansible-run:
+  stage: ansible
+  image: willhallonline/ansible:latest
+  tags:
+    - Debian-Runner
+  script:
+    - ansible --version
+    - ls
+    - ansible-playbook -i inventory 00-VM-DEPLOYMENT.yml
+  when: manual

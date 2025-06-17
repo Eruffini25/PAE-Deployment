@@ -1,0 +1,16 @@
+[all:vars]
+# Ne pas toucher !
+ansible_user=adminit
+ansible_ssh_private_key_file=/root/.ssh/id_ed25519
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[solo]
+# ip actuelle de la machine
+10.0.1.152
+
+[solo:vars]
+# hostname et ip voulu 
+new_hostname=SLTFR01-SFTP
+static_ip=10.0.1.20/24
+
+# Si erreur sudo "--ask-become-pass"

@@ -1,0 +1,59 @@
+---
+- name: Ajouter un hôte à Zabbix via l'API
+  hosts: solo
+  gather_facts: no
+  become: no
+
+  vars:
+    zabbix_url: "http://10.0.1.4/zabbix/api_jsonrpc.php"
+    zabbix_username: "Admin"
+    zabbix_password: "zabbix"
+    host_name: "{{ new_hostname }}"  # Remplacez par le nom de l'hôte que vous souhaitez configurer
+    host_ip: "{{ static_ip | regex_replace('/.*', '') }}" #"{{ static_ip }}"  # Remplacez par l'adresse IP de l'hôte
+    group_name: "Windows servers"  # Groupe auquel l'hôte appartient (modifié pour Windows)
+    template_name: "Template OS Windows"  # Template à lier à l'hôte (modifié pour Windows)
+    zabbix_auth_token: "e15f39ea4c09ee0510658e7ecfd5a5c0e43608e0efe60d490673e300070c92ab"
+
+  tasks:
+    - name: Créer un hôte dans Zabbix
+      uri:
+        url: "{{ zabbix_url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          {
+            "jsonrpc": "2.0",
+            "method": "host.create",
+            "params": {
+              "host": "{{ host_name }}",
+              "interfaces": [
+                {
+                  "type": 1,
+                  "main": 1,
+                  "useip": 1,
+                  "ip": "{{ host_ip }}",
+                  "dns": "",
+                  "port": "10050"
+                }
+              ],
+              "groups": [
+                {
+                  "groupid": "6"  # Assurez-vous de définir le bon groupid pour "Linux servers"
+                }
+              ],
+              "templates": [
+                {
+                  "templateid": "10081"  # Assurez-vous de définir le bon templateid pour "Template OS Linux"
+                }
+              ]
+            },
+            "auth": "{{ zabbix_auth_token }}",
+            "id": 2
+          }
+      register: create_host_response
+
+    - name: Afficher la réponse de la création d'hôte
+      debug:
+        var: create_host_response

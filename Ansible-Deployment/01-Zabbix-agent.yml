@@ -1,0 +1,34 @@
+---
+- name: configuration agent zabbix
+  hosts: solo
+  gather_facts: no
+  become: true
+
+  tasks:
+    - name: Mettre a jour les depots apt
+      apt:
+        update_cache: yes
+      become: yes
+
+    - name: Installation Zabbix agent
+      apt:
+        name: zabbix-agent2
+        update_cache: yes
+
+    - name: Configuration serveur Zabbix
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^Server=127.0.0.1'
+        line: Server=10.0.1.4
+
+    - name: configuration Host Zabbix
+      lineinfile:
+        dest: /etc/zabbix/zabbix_agent2.conf
+        regexp: ^Hostname=.*
+        insertafter: ^# Hostname=
+        line: Hostname={{ new_hostname }}
+
+    - name: Restart service Zabbix
+      service:
+        name: zabbix-agent2
+        state: restarted

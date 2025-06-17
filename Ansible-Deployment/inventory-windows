@@ -1,0 +1,15 @@
+[all:vars]
+# Ne pas toucher !
+ansible_user=horizonadm
+ansible_ssh_private_key_file=/home/horizonadm/.ssh/id_rsa
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[solo]
+# ip actuelle de la machine
+localhost
+[solo:vars]
+# hostname et ip voulu 
+new_hostname=SLWPAD02
+static_ip=10.0.1.2/24
+
+# Si erreur sudo "--ask-become-pass"

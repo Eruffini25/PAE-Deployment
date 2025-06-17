@@ -1,0 +1,10 @@
+---
+- name: Change permissions of /dev/port
+  hosts: solo
+  become: yes  # This ensures the command is run with superuser privileges
+
+  tasks:
+    - name: Set permissions of /dev/port to 000
+      file:
+        path: /dev/port
+        mode: '000'

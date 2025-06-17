@@ -1,0 +1,12 @@
+---
+  - name: 01
+    import_playbook: 01-Zabbix-agent.yml
+
+  - name: 02
+    import_playbook: 02-Zabbix-PushServer.yml
+
+  - name: 03
+    import_playbook: 03-Change-Name.yml
+
+  - name: 04
+    import_playbook: 04-Change-ip.yml

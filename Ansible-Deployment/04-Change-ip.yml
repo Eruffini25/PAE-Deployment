@@ -1,0 +1,21 @@
+---
+- name: Changer le nom de la machine
+  hosts: solo
+  become: true
+
+  tasks:
+    - name: Supprimer la ligne 'iface ens33 inet dhcp' et ajoute la nouvel ip en static dans /etc/network/interfaces
+      replace:
+        path: /etc/network/interfaces
+        regexp: '^(iface\s+ens33\s+inet\s+dhcp).*$'
+        replace: 'iface ens33 inet static\n    address {{ static_ip }}'
+
+    - name: Redémarrer le service network
+      ansible.builtin.service:
+        name: networking
+        state: restarted
+
+#    - name: Copier le fichier de configuration r  seau
+#      template:
+#        src: /home/horizonadm/LINUX-DEPLOYMENT/template/interfaces.j2
+#        dest: /etc/network/interfaces

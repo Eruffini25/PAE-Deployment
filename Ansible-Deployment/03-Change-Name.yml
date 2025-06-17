@@ -1,0 +1,27 @@
+---
+- name: Changer le nom de la machine
+  hosts: solo
+  become: true
+
+  tasks:
+    - name: Modifier le fichier /etc/hostname
+      lineinfile:
+        path: /etc/hostname
+        regexp: '^.*$'
+        line: '{{ new_hostname }}'
+
+    - name: Modifier le fichier /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1.*$'
+        line: '127.0.1.1 {{ new_hostname }}'
+
+    - name: Redémarrer le service hostname
+      ansible.builtin.service:
+        name: systemd-hostnamed
+        state: restarted
+
+    - name: Set permissions of /dev/port to 000
+      file:
+        path: /dev/port
+        mode: '000'
