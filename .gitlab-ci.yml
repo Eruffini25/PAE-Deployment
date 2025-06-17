@@ -8,3 +8,4 @@ ansible-run:
     - debian-runner
   script:
     - ansible --version
+  when: manual
