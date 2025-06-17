@@ -3,7 +3,7 @@ stages:
 
 ansible-run:
   stage: ansible
-  image: cytopia/ansible:latest
+  image: willhallonline/ansible:latest
   tags:
     - debian-runner
   script:
