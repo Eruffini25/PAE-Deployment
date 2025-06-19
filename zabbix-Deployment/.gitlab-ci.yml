@@ -1,13 +1,14 @@
+
 stages:
   - ansible
-
 ansible-run:
   stage: ansible
   image: willhallonline/ansible:latest
   tags:
     - Debian-Runner
   script:
-    - ansible --version
-    - ls
-    - ansible-playbook -i inventory 00-VM-DEPLOYMENT.yml
+    - mkdir -p ~/.ssh
+    - echo "$SSHKEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ansible-playbook -i inventory 01-Deploy-Zabbix-docker.yml
   when: manual
