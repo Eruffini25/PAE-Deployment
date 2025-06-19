@@ -1,3 +1,4 @@
+
 ---
 - name: Déploiement de Zabbix avec Docker
   hosts: all
@@ -6,22 +7,18 @@
     zabbix_web_port: 8081
     zabbix_db_password: zabbix
     php_timezone: Europe/Paris
-
   tasks:
-
     - name: Créer le dossier de configuration Zabbix
       file:
         path: /srv/zabbix
         state: directory
         mode: '0755'
         recurse: yes
-
     - name: Créer le fichier docker-compose.yml
       copy:
         dest: /srv/zabbix/docker-compose.yml
         content: |
           version: '3.5'
-
           services:
             postgres:
               image: postgres:15
@@ -31,7 +28,6 @@
                 POSTGRES_DB: zabbix
               volumes:
                 - pgdata:/var/lib/postgresql/data
-
             zabbix-server:
               image: zabbix/zabbix-server-pgsql:latest
               depends_on:
@@ -42,7 +38,6 @@
                 POSTGRES_PASSWORD: {{ zabbix_db_password }}
               ports:
                 - "10051:10051"
-
             zabbix-web:
               image: zabbix/zabbix-web-nginx-pgsql:latest
               depends_on:
@@ -55,11 +50,24 @@
                 PHP_TZ: {{ php_timezone }}
               ports:
                 - "{{ zabbix_web_port }}:8080"
-
           volumes:
             pgdata:
-
-    - name: Lancer la stack Zabbix via Docker Compose
-      community.docker.docker_compose:
+    - name: Lancer la stack Zabbix avec Docker Compose v2
+      community.docker.docker_compose_v2:
         project_src: /srv/zabbix
         state: present
+    - name: Afficher les informations d'accès Zabbix
+      debug:
+        msg:
+          - "🌐 Interface Zabbix disponible sur : http://{{ inventory_hostname }}:{{ zabbix_web_port }}"
+          - "👤 Login : Admin"
+          - "🔑 Mot de passe : zabbix"
+    - name: Attendre que l'interface Zabbix Web soit disponible
+      uri:
+        url: "http://{{ inventory_hostname }}:{{ zabbix_web_port }}"
+        status_code: 200
+        return_content: no
+      register: zabbix_web_check
+      retries: 10
+      delay: 10
+      until: zabbix_web_check.status == 200
