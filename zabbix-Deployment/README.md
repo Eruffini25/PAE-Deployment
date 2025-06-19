@@ -16,3 +16,12 @@
   . Mot de passe : zabbix
 - Attend automatiquement que l’interface web soit disponible, avec 10 tentatives espacées de 10 secondes.
 
+### .gitlab-ci.yml
+
+- Utilise l’image Docker willhallonline/ansible:latest, qui contient Ansible préinstallé.
+- Utilise un runner taggé Debian-Runner.
+- Crée le dossier .ssh, puis :
+  . injecte la clé SSH privée stockée dans la variable GitLab SSHKEY,
+  . la rend utilisable (droits 600).
+- Exécute le playbook 01-Deploy-Zabbix-docker.yml pour déployer Zabbix via Ansible.
+- Le job est en mode manuel (when: manual), donc il ne s’exécute que si on clique sur "Play" dans l’interface GitLab CI.
