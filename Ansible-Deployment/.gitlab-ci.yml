@@ -7,7 +7,10 @@ ansible-run:
   tags:
     - Debian-Runner
   script:
-    - ansible --version
+    - mkdir -p ~/.ssh
+    - echo "$SSHKEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
     - ls
+    #- ls .ssh
     - ansible-playbook -i inventory 00-VM-DEPLOYMENT.yml
   when: manual
