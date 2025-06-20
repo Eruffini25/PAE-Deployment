@@ -19,7 +19,7 @@
       ansible.builtin.lineinfile:
         path: /etc/zabbix/zabbix_agent2.conf
         regexp: '^Server=127.0.0.1'
-        line: Server=10.0.1.4
+        line: Server={{ zabbix_ip }}
 
     - name: configuration Host Zabbix
       lineinfile:
