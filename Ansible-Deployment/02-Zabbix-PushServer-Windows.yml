@@ -5,22 +5,19 @@
   become: no
 
   vars:
-    zabbix_url: "http://10.0.1.4/zabbix/api_jsonrpc.php"
-    zabbix_username: "Admin"
-    zabbix_password: "zabbix"
-    host_name: "{{ new_hostname }}"  # Remplacez par le nom de l'hôte que vous souhaitez configurer
-    host_ip: "{{ static_ip | regex_replace('/.*', '') }}" #"{{ static_ip }}"  # Remplacez par l'adresse IP de l'hôte
-    group_name: "Windows servers"  # Groupe auquel l'hôte appartient (modifié pour Windows)
-    template_name: "Template OS Windows"  # Template à lier à l'hôte (modifié pour Windows)
-    zabbix_auth_token: "e15f39ea4c09ee0510658e7ecfd5a5c0e43608e0efe60d490673e300070c92ab"
+    zabbix_url: "http://{{ zabbix_ip }}:8081/api_jsonrpc.php"
+    host_name: "{{ new_hostname }}"
+    host_ip: "{{ static_ip | regex_replace('/.*', '') }}"
+    zabbix_auth_token: "50748a8a3080828eebf07eed07105d6d2a89a40f30e03866d9e5f08ebd20251d"
 
   tasks:
-    - name: Créer un hôte dans Zabbix
+    - name: Créer un hôte dans Zabbix avec token Bearer
       uri:
         url: "{{ zabbix_url }}"
         method: POST
         headers:
           Content-Type: "application/json"
+          Authorization: "Bearer {{ zabbix_auth_token }}"
         body_format: json
         body:
           {
@@ -40,20 +37,22 @@
               ],
               "groups": [
                 {
-                  "groupid": "6"  # Assurez-vous de définir le bon groupid pour "Linux servers"
+                  "groupid": "6"
                 }
               ],
               "templates": [
                 {
-                  "templateid": "10081"  # Assurez-vous de définir le bon templateid pour "Template OS Linux"
+                  "templateid": "10081"
                 }
               ]
             },
-            "auth": "{{ zabbix_auth_token }}",
             "id": 2
           }
+        status_code: 200
+        return_content: yes
       register: create_host_response
 
     - name: Afficher la réponse de la création d'hôte
       debug:
-        var: create_host_response
+        var: create_host_response.json
+
