@@ -94,3 +94,4 @@
           - "📡 API : http://{{ inventory_hostname }}:{{ zabbix_web_port }}/api_jsonrpc.php"
           - "👤 Login : Admin"
           - "🔑 Mot de passe : zabbix"
+
